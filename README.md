@@ -1,10 +1,11 @@
-# [Título del trabajo]
+# Control de Aforo
 
 [Descripción breve del proyecto a realizar (2-3 frases).]
 
 ## Integrantes del equipo
 
-[Nombres, apellidos, y usuario GitHub de los integrantes del equipo.]
+Aitana Martínez Gayà -> @aitana-martinez 
+Sofía Toledo Delgado -> 
 
 ## Objetivos del trabajo
 
