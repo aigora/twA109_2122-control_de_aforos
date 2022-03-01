@@ -4,7 +4,7 @@ Controlar el aforo de los gimnasios para garantizar la salud y seguridad de los 
 
 ## Integrantes del equipo
 
-Aitana Martínez Gayà -> @aitana-martinez \n
+Aitana Martínez Gayà -> @aitana-martinez 
 Sofía Toledo Delgado -> @sofiatoledo
 
 ## Objetivos del trabajo
