@@ -1,0 +1,75 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <locale.h>
+
+int menu_ppal(int);
+
+int main(void)
+{
+	int opcion, dia, mes, año, telefono; int menu;
+	char nombre [15], apellido1 [15], apellido2[15];
+	const int año_ = 2022;
+	int dia_, mes_, min, hora, min_;
+
+	setlocale(LC_ALL, "es-ES");
+
+	printf("Introduzca la opcion deseada:\n 1. Registrarse\n 2. Solicitar Cita\n 3. Entrar Gimnasio\n 4. Salir Gimnasio\n 5. Datos clientes\n");
+	scanf_s("%d", &opcion);
+
+	switch (opcion)
+	{
+	case 1:
+		printf("Introduzca su nombre:\n");
+		scanf_s("%s", nombre,(unsigned)_countof(nombre));
+		printf("Introduzca primer apellido:\n");
+		scanf_s("%s", apellido1, (unsigned)_countof(apellido1));
+		printf("Introduzca segundo apellido:\n");
+		scanf_s("%s", apellido2, (unsigned)_countof(apellido2));
+
+		printf("Introduzca fecha de nacimiento:\n");
+		printf("Dia:\n");
+		scanf_s("%d", &dia);
+		printf("Mes:\n");
+		scanf_s("%d", &mes);
+		printf("Año:\n");
+		scanf_s("%d", &año);
+		
+		printf("Introduzca su telefono:\n");
+		scanf_s("%d", &telefono);
+		break;
+
+	case 2:
+		printf("Introduzca fecha del dia que desea acudir:\n");
+		printf("Dia:\n");
+		scanf_s("%d", &dia_);
+		printf("Mes:\n");
+		scanf_s("%d", &mes_);
+
+		printf("Introduzca tiempo de estancia (MAX 120min):\n");
+		scanf_s("%d", &min);
+
+		printf("Introduzca la hora de llegada (00 00):\n");
+		scanf_s("%d %d", &hora,&min_);
+		break;
+	
+	case 3:
+		printf("Introduzca nombre completo");
+		
+		break;
+
+	case 4:
+		printf("Introduzca nombre completo");
+		break;
+
+	case 5:
+		printf("Introduzca nombre completo");
+	}
+}
+
+int menu_ppal(int opcion)
+{
+	
+}
+
+// Los tres últimos cases se complementarian con el fichero correspondiente a la persona 
