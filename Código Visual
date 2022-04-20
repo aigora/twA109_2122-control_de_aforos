@@ -1,0 +1,209 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <locale.h>
+#include <string.h>
+#include "SerialClass/SerialClass.h"
+#include <time.h>
+#include <sys/types.h>
+#include <sys/timeb.h>
+
+#define aforo 3
+#define TAM 20
+
+typedef struct
+{
+	int dia;
+	int mes;
+	int anio;
+	int hora;
+	int minuto;
+	int segundo;
+}FechaHora;
+
+typedef struct
+{
+	int dia;
+	int mes;
+	int anyo;
+	int hora;
+	int duracion;
+}fecha;
+
+typedef struct
+{
+	char nombre[TAM];
+	char apellido[TAM];
+	int telefono;
+	int penalizaciones;
+	fecha fnacimiento;
+	fecha cita;
+}datos;
+
+FechaHora ObtenerFechaHora(void);
+int posicion_clientes_v1_2(datos*, int, char*);
+void consulta_clientes_v1_2(datos*, int);
+int mostrar_datos_clientes(datos);
+
+int main(void)
+{
+	Serial* Arduino;
+	char puerto[] = "COM3";
+	int opcion, menu;
+	const int anio_ = 2022;
+	int contador, i,n;
+	char nombre[TAM]; // para comparar y buscar cliente
+
+	datos clientes[TAM];
+
+	printf("Introduzca la opcion deseada:\n 1. Registrarse\n 2. Solicitar Cita\n 3. Entrar Gimnasio\n 4. Salir Gimnasio\n 5. Datos clientes\n");
+	scanf_s("%d", &opcion);
+
+	FechaHora ahora;
+
+	setlocale(LC_ALL, "es-ES");
+
+	ahora = ObtenerFechaHora();
+	printf("Hoy es %2d/%2d/%4d\n", ahora.dia, ahora.mes, ahora.anio);
+	printf("y son las %2d:%2d:%2d\n", ahora.hora, ahora.minuto, ahora.segundo);
+
+	switch (opcion)
+	{
+	case 1:
+		printf("Introduzca su nombre:\n");
+		gets_s(clientes[i].nombre,TAM);
+		printf("Introduzca primer apellido:\n");
+		gets_s(clientes[i].apellido,TAM);
+	
+		printf("Introduzca fecha de nacimiento d m a:\n");
+		scanf_s("%d", &clientes[i].fnacimiento.dia);
+		scanf_s("%d", &clientes[i].fnacimiento.mes);
+		scanf_s("%d", &clientes[i].fnacimiento.anyo);
+		
+		printf("Introduzca su telefono:\n");
+		scanf_s("%d",&clientes[i].telefono);
+		i++; // para que pase a otro cliente cuando se vuelva a abrir 
+		break;
+
+	case 2:
+		printf("Introduzca su nombre:\n");
+		scanf_s("%s", &nombre);
+		for (i = 0; i < TAM; i++)
+		{
+			if (nombre == clientes[i].nombre)
+			{
+				printf("Introduzca fecha del dia que desea acudir (d m):\n");
+				scanf_s("%d", &clientes[i].cita.dia);
+				scanf_s("%d", &clientes[i].cita.mes);
+
+				printf("Introduzca duracion de estancia (MAX 120min):\n");
+				scanf_s("%d", &clientes[i].cita.duracion);
+
+				printf("Introduzca la hora de llegada (00 00):\n"); // preguntar introducir (15:30)
+				scanf_s("%d", &clientes[i].cita.hora);
+			}
+		}
+		break;
+	
+	case 3:
+		printf("Introduzca su nombre:\n");
+		scanf_s("%s",nombre);
+		printf("Introduzca primer apellido:\n");
+		gets_s(clientes[i].apellido, TAM);
+
+		for (i = 0; i < TAM; i++)
+		{
+			if (nombre == clientes[i].nombre)
+			{
+				// comparar con el ordenador si cita=ordenador
+				if (FechaHora != fecha)
+				{
+					printf("No tienes cita.");
+				}
+				else
+					if (FechaHora == fecha)
+						contador++;
+			}
+		}
+
+		if (contador > aforo) // como imprimir en pantalla quien excede el tiempo 
+		{
+			for (i = 0; i < TAM; i++)
+			{
+
+			}
+		}
+		break;
+
+	case 4:
+		printf("Introduzca su nombre:\n");
+		scanf_s("%s", nombre);
+
+		for (i = 0; i < TAM; i++)
+		{
+			if (nombre == clientes[i].nombre)
+				contador--;
+		}
+		break;
+
+	case 5:
+		printf("Introduzca su nombre:\n");
+		scanf_s("%s", nombre);
+		
+		consulta_clientes_v1_2; 
+		break;
+	}
+}
+
+FechaHora ObtenerFechaHora(void)
+{
+	FechaHora fh;
+	time_t ltime;
+	struct tm today;
+	errno_t err;
+
+	_tzset(); // Establecemos la "Time Zone" del S.O.
+	time(&ltime);
+	err = _localtime64_s(&today, &ltime);
+	if (err)
+		printf("Error al capturar la fecha/hora\n");
+	else
+	{
+		fh.dia = today.tm_mday;
+		fh.mes = 1 + today.tm_mon;
+		fh.anio = 1900 + today.tm_year;
+		fh.hora = today.tm_hour;
+		fh.minuto = today.tm_min;
+		fh.segundo = today.tm_sec;
+	}
+	return fh;
+}
+
+int posicion_clientes_v1_2(datos* clientes, int n, char* nombre)
+{
+	int i, posicion = ‐1;
+	for (i = 0; i < n && posicion == ‐1; i++)
+		if (strcmp(nombre, clientes[i].nombre) == 0)
+			posicion = i;
+	return posicion;
+}
+
+void consulta_clientes_v1_2(datos* clientes, int n)
+{
+	char nombre[TAM];
+	int posicion = ‐1;
+	printf("Introduzca nombre a buscar:");
+	gets_s(nombre, TAM);
+	posicion = posicion_clientes_v1_2(clientes, n, nombre);
+	if (posicion == ‐1)
+		printf("No existe ningún usuario con ese nombre\n");
+	else
+		mostrar_datos_clientes(clientes[posicion]);
+}
+
+int mostrar_datos_clientes(datos clientes)
+{
+	printf("%s\t%s\t\t", clientes.nombre, clientes.apellido);
+	printf("%d\n", clientes.telefono);
+	printf("%d\n", clientes.penalizaciones);
+}
