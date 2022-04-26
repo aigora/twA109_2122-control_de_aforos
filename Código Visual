@@ -44,6 +44,7 @@ FechaHora ObtenerFechaHora(void);
 int posicion_clientes_v1_2(datos*, int, char*);
 void consulta_clientes_v1_2(datos*, int);
 int mostrar_datos_clientes(datos);
+int mostrar_personas_excedidas(int);
 
 int main(void)
 {
@@ -59,13 +60,14 @@ int main(void)
 	printf("Introduzca la opcion deseada:\n 1. Registrarse\n 2. Solicitar Cita\n 3. Entrar Gimnasio\n 4. Salir Gimnasio\n 5. Datos clientes\n");
 	scanf_s("%d", &opcion);
 
-	FechaHora ahora;
+	FechaHora ahora[TAM];
+	fecha deseada[TAM];
 
 	setlocale(LC_ALL, "es-ES");
 
-	ahora = ObtenerFechaHora();
-	printf("Hoy es %2d/%2d/%4d\n", ahora.dia, ahora.mes, ahora.anio);
-	printf("y son las %2d:%2d:%2d\n", ahora.hora, ahora.minuto, ahora.segundo);
+	ahora [i]= ObtenerFechaHora();
+	printf("Hoy es %2d/%2d/%4d\n", ahora[i].dia, ahora[i].mes, ahora[i].anio);
+	printf("y son las %2d:\n", ahora[i].hora);
 
 	switch (opcion)
 	{
@@ -99,7 +101,7 @@ int main(void)
 				printf("Introduzca duracion de estancia (MAX 120min):\n");
 				scanf_s("%d", &clientes[i].cita.duracion);
 
-				printf("Introduzca la hora de llegada (00 00):\n"); // preguntar introducir (15:30)
+				printf("Introduzca la hora de llegada (00 00):\n"); // horas en punto
 				scanf_s("%d", &clientes[i].cita.hora);
 			}
 		}
@@ -116,12 +118,12 @@ int main(void)
 			if (nombre == clientes[i].nombre)
 			{
 				// comparar con el ordenador si cita=ordenador
-				if (FechaHora != fecha)
+				if (ahora[i].hora != deseada[i].hora)
 				{
 					printf("No tienes cita.");
 				}
 				else
-					if (FechaHora == fecha)
+					if (ahora[i].hora == deseada[i].hora)
 						contador++;
 			}
 		}
@@ -151,6 +153,22 @@ int main(void)
 		scanf_s("%s", nombre);
 		
 		consulta_clientes_v1_2; 
+		/*
+		for (i = 0; i < TAM; i++)
+		{
+			if (nombre==clientes[i].nombre)
+			{
+				printf("Telefono:\n");
+				printf("%d", clientes[i].telefono);
+				printf("Fecha de nacimiento (d m a):\n");
+				printf("%d", clientes[i].fnacimiento.dia);
+				printf("%d", clientes[i].fnacimiento.mes);
+				printf("%d", clientes[i].fnacimiento.anyo);
+				printf("Penalizaciones:\n");
+				printf("%d", clientes[i].penalizaciones);
+				printf("\n");
+			}
+		}*/
 		break;
 	}
 }
@@ -173,16 +191,14 @@ FechaHora ObtenerFechaHora(void)
 		fh.mes = 1 + today.tm_mon;
 		fh.anio = 1900 + today.tm_year;
 		fh.hora = today.tm_hour;
-		fh.minuto = today.tm_min;
-		fh.segundo = today.tm_sec;
 	}
 	return fh;
 }
 
 int posicion_clientes_v1_2(datos* clientes, int n, char* nombre)
 {
-	int i, posicion = ‐1;
-	for (i = 0; i < n && posicion == ‐1; i++)
+	int i, posicion = -1;
+	for (i = 0; i < n && posicion == -1; i++)
 		if (strcmp(nombre, clientes[i].nombre) == 0)
 			posicion = i;
 	return posicion;
@@ -191,11 +207,11 @@ int posicion_clientes_v1_2(datos* clientes, int n, char* nombre)
 void consulta_clientes_v1_2(datos* clientes, int n)
 {
 	char nombre[TAM];
-	int posicion = ‐1;
+	int posicion = -1;
 	printf("Introduzca nombre a buscar:");
 	gets_s(nombre, TAM);
 	posicion = posicion_clientes_v1_2(clientes, n, nombre);
-	if (posicion == ‐1)
+	if (posicion == -1)
 		printf("No existe ningún usuario con ese nombre\n");
 	else
 		mostrar_datos_clientes(clientes[posicion]);
