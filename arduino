@@ -1,38 +1,66 @@
+enum Estados{MODO_ALARMA_ON,MODO_ALARMA_OFF,LED_V_ON,LED_R_ON};
+Estados estado=MODO_ALARMA_OFF;
 const int alarma=9;
 const int verde=10,rojo=12;
 int duracion=5000;
-//bool isAlarmOn=0; //almacena el estado de la alarma;
+String mensaje_salida;
+int mensaje_entrada;
+
+
 void setup() {
-  // put your setup code here, to run once:
+  Serial.begin(9600);
   pinMode(alarma,OUTPUT); // definir pin como salida 
   pinMode(verde,OUTPUT);
   pinMode(rojo,OUTPUT);
 }
-bool GetSystemState()
-{
-  return true; //cambiar en función del sensor usado
-}
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  isAlarmOn= GetSystemState();
-  while (opcion==3)
+
+  procesar_mensajes();
+
+  switch (estado)
   {
-  if(contador>aforo)
-  {
-    digitalWrite(verde,LOW);
-    digitalWrite(rojo,HIGH);
-    delay(duracion);
+    case MODO_ALARMA_ON:
+    modo_alarma(5.0,15.0,2000,3000,1);
     digitalWrite(alarma,HIGH);
     delay(duracion);
-  }
-  else
-  {
+    estado=MODO_ALARMA_OFF;
+    break;
+
+    case MODO_ALARMA_OFF:
+    modo_alarma(5.0,15.0,2000,3000,0);
     digitalWrite(alarma,LOW);
+    delay(duracion);
+    break;
+
+    case LED_V_ON:
     digitalWrite(verde,HIGH); 
     delay(duracion); 
     digitalWrite(rojo,LOW);
-   
+    estado=LED_OFF;
+    break;
+
+    case LED_R_ON:
+    digitalWrite(verde,LOW); 
+    delay(duracion); 
+    digitalWrite(rojo,HIGH);
+    break;
   }
 }
+
+void procesar_mensajes(void)
+{
+  if(Serial.available()>0)
+  {
+    mensaje_entrada=Serial.readStringUntil('\n');
+
+    if(mensaje_entrada>aforo)
+    {
+    estado=MODO_ALARMA_ON;
+    mensaje_salida="Aforo Completo";
+    Serial.println(mensaje_salida);
+    }
+    else 
+    estado=MODO_ALARMA_OFF;
+  }
 }
