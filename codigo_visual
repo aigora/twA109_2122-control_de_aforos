@@ -54,6 +54,8 @@ int comparar_horas(fecha, FechaHora);
 void consultar_cliente(datos[], int);
 void mostrar_datos_clientes(datos);
 void listado_clientes(datos[], int);
+void leer_fichero_usuarios_v1(datos*, int*, int);
+int escribir_fichero_usuarios_v1(datos*, int);
 
 int main(void)
 {
@@ -298,7 +300,8 @@ FechaHora ObtenerFechaHora(void)
 
 void mostrar_datos_clientes(datos clientes)
 {
-	printf("Nombre y apellido=%s\t%s\t\t", clientes.nombre, clientes.apellido);
+	printf("Nombre y apellido=%s\t%s\t", clientes.nombre, clientes.apellido);
+	printf("Fecha nacimiento=%d\t%d\t%d\t",clientes.fnacimiento.dia,clientes.fnacimiento.mes,clientes.fnacimiento.anyo);
 	printf("Teléfono=%d\n", clientes.telefono);
 	printf("Penalizaciones=%d\n", clientes.penalizaciones);
 }
@@ -313,4 +316,75 @@ void listado_clientes(datos clientes[], int n)
 		mostrar_datos_clientes(clientes[i]);
 	}
 	return;
+}
+
+void leer_fichero_usuarios_v1(datos p[], int* pnumero, int longitud)
+{
+	FILE* fichero; // Puntero para manipular el fichero
+	int num = 0; 
+	int i, pos; 
+	errno_t cod_error; 
+	char intro[2];
+
+	cod_error = fopen_s(&fichero, "Usuarios.txt", "rt"); // Se intenta abrir el fichero de texto
+	if (cod_error != 0)  // Si el fichero no se ha podido abrir
+		*pnumero = 0; 
+	else  // Si el fichero ha podido abrirse 
+	{
+		fscanf_s(fichero, "%d", &num); // Se lee la cantidad de registros
+		if (num == 0) 
+			*pnumero = 0; // La lista estará vacía
+		else  // Si hay registros para leer (según el entero leído)
+		{
+			if (num > longitud) // Si no hay memoria suficiente
+			{
+				printf("Memoria insuficiente para almacenar los datos del fichero\n");
+				*pnumero = 0;
+			}
+			else // Si hay memoria suficiente
+			{
+				fgets(intro, 2, fichero); // Saltamos el intro que hay tras el número 
+				for (i = 0; i < num; i++)  // Se leen los registros uno por uno
+				{
+					fgets((p + i)->nombre, TAM, fichero);
+					pos = strlen((p + i)->nombre);  // Calcula la longitud del nombre para ubicar el \n.
+					(p + i)->nombre[pos - 1] = '\0';
+					fgets((p + i)->apellido, TAM, fichero);
+					pos = strlen((p + i)->apellido);  
+					(p + i)->apellido[pos - 1] = '\0';
+					fscanf_s(fichero, "%d", &(p + i)->penalizaciones);
+					// fgets(intro, 2, fichero); ??
+					fscanf_s(fichero, "%d", &(p + i)->telefono);
+					fgets(intro, 2, fichero); 
+				}
+				*pnumero = num;
+			}
+		}
+		fclose(fichero); // Se cierra el fichero
+	}
+}
+
+int escribir_fichero_usuarios_v1(datos* lista, int numero)
+{
+	int i;
+	FILE* fichero;
+	errno_t err;
+
+	err = fopen_s(&fichero, "Usuarios.txt", "w");
+	if (err == 0) // Si el fichero se ha podido crear
+	{
+		fprintf(fichero, "%d\n", numero); // Se graba en el fichero el número de usuarios
+		for (i = 0; i < numero; i++)
+		{
+
+			fprintf(fichero, "%s\n", (lista + i)->nombre);
+			fprintf(fichero, "%s\n", (lista + i)->apellido);
+			fprintf(fichero, "%d\n", (lista + i)->penalizaciones);
+			fprintf(fichero, "%d\n", (lista + i)->telefono);
+		}
+		fclose(fichero);
+	}
+	else
+		printf("Se ha producido un problema a la hora de grabar el fichero de usuarios\n");
+	return err;
 }
