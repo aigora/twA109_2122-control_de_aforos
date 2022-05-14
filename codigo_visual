@@ -56,17 +56,22 @@ void mostrar_datos_clientes(datos);
 void listado_clientes(datos[], int);
 void leer_fichero_usuarios_v1(datos*, int*, int);
 int escribir_fichero_usuarios_v1(datos*, int);
+//int crear_fichero(datos*, char, int);
 
 int main(void)
 {
 	Serial* Arduino = NULL;
 	char puerto[] = "COM3";
 
-	int opcion_menu; // Opción de menú 
+	int opcion_menu; 
+	int i, exito,n=0; 
+	int longitud = TAM;
 	datos clientes[TAM]; // Vector con los datos de los clientes
 	int total_clientes = 0; // Total clientes del Gimnasio
 	int contador = 0; // Aforo actual en el gimnasio
 	FechaHora ahora;
+
+	leer_fichero_usuarios_v1(clientes, &n, longitud);
 
 	setlocale(LC_ALL, "es-ES");
 	do
@@ -103,6 +108,8 @@ int main(void)
 		default:
 			printf("Opción incorrecta\n");
 		}
+		if (total_clientes == 0)
+			escribir_fichero_usuarios_v1(clientes, n);
 	} while (opcion_menu != 7);
 	return 0;
 }
@@ -115,7 +122,7 @@ int menu(void)
 	printf("Introduzca la opcion deseada:\n 1. Registrarse\n 2. Solicitar Cita\n 3. Entrar Gimnasio\n ");
 	printf("4. Salir Gimnasio\n 5. Datos clientes\n 6. Listado de clientes\n 7.Fin programa\n");
 	scanf_s("%d", &opcion);
-	scanf_s("%c", &intro); // PAra que el intro tras la opción no se quede en el buffer.
+	scanf_s("%c", &intro); // Para que el intro tras la opción no se quede en el buffer.
 	return opcion;
 }
 
@@ -321,18 +328,18 @@ void listado_clientes(datos clientes[], int n)
 void leer_fichero_usuarios_v1(datos p[], int* pnumero, int longitud)
 {
 	FILE* fichero; // Puntero para manipular el fichero
-	int num = 0; 
-	int i, pos; 
-	errno_t cod_error; 
+	int num = 0; // Variable auxiliar para numero de usuarios leídos
+	int i, pos; // Variable bucle y posicion final cadena
+	errno_t cod_error; // Codigo de error tras el proceso de apertura.
 	char intro[2];
 
-	cod_error = fopen_s(&fichero, "Usuarios.txt", "rt"); // Se intenta abrir el fichero de texto
+	cod_error = fopen_s(&fichero, "Usuario.txt", "rt"); // Se intenta abrir el fichero de texto
 	if (cod_error != 0)  // Si el fichero no se ha podido abrir
-		*pnumero = 0; 
+		*pnumero = 0; // La lista estará vacía
 	else  // Si el fichero ha podido abrirse 
 	{
 		fscanf_s(fichero, "%d", &num); // Se lee la cantidad de registros
-		if (num == 0) 
+		if (num == 0) // Si esa cantidad es cero
 			*pnumero = 0; // La lista estará vacía
 		else  // Si hay registros para leer (según el entero leído)
 		{
@@ -350,12 +357,12 @@ void leer_fichero_usuarios_v1(datos p[], int* pnumero, int longitud)
 					pos = strlen((p + i)->nombre);  // Calcula la longitud del nombre para ubicar el \n.
 					(p + i)->nombre[pos - 1] = '\0';
 					fgets((p + i)->apellido, TAM, fichero);
-					pos = strlen((p + i)->apellido);  
+					pos = strlen((p + i)->apellido);  // Calcula la longitud del nombre para ubicar el \n.
 					(p + i)->apellido[pos - 1] = '\0';
 					fscanf_s(fichero, "%d", &(p + i)->penalizaciones);
 					// fgets(intro, 2, fichero); ??
 					fscanf_s(fichero, "%d", &(p + i)->telefono);
-					fgets(intro, 2, fichero); 
+					fgets(intro, 2, fichero); // Saltamos el intro que hay tras el número
 				}
 				*pnumero = num;
 			}
