@@ -88,18 +88,15 @@
 #define NOTE_D8  4699
 #define NOTE_DS8 4978
 
-#define aforo 3
+//#define aforo 3
 
-
+int aforo;
 const int verde=10;
 const int rojo=12;
 #define BUZZER_PASIVO 8   // buzzer pasivo en pin 8
 
 enum Encuentras{LED_V_ON,LED_R_ON,LEDS_OFF};
 Encuentras encuentra=LEDS_OFF;
-
-String mensaje_salida;
-int mensaje_entrada;
 
 int melodia[] = {   // array con las notas de la melodia
   NOTE_C4, NOTE_G3, NOTE_G3, NOTE_A3, NOTE_G3, 0, NOTE_B3, NOTE_C4
@@ -119,7 +116,7 @@ void setup() {
 void loop() {
 
 
-   //procesar_mensajes();
+   procesar_mensajes();
 
  
     if(aforo>2)//aforo lo coge de visual
@@ -169,3 +166,24 @@ void loop() {
   }
     
   }
+
+void procesar_mensajes(void)
+{
+  String mensaje_entrada;
+  String mensaje_salida;
+
+  if(Serial.available()>0)
+  {
+    mensaje_entrada=Serial.readStringUntil('\n');
+
+    if (mensaje_entrada.compareTo("SET_AFORO")==0)
+    {
+      mensaje_entrada=Serial.readStringUntil('\n');
+      aforo=mensaje_entrada.toInt();
+      mensaje_salida="AFORO MODIFICADO);
+    }
+    else
+      mensaje_salida="COMANDO DESCONOCIDO";
+
+    Serial.println(mensaje_salida);
+}
