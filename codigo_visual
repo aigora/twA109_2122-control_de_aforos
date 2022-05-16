@@ -70,7 +70,13 @@ int main(void)
 	int total_clientes = 0; // Total clientes del Gimnasio
 	int contador = 0; // Aforo actual en el gimnasio
 	FechaHora ahora;
+	char mensaje_enviar[TAM];
 
+	sprintf(mensaje_enviar, "SET_AFORO\n");
+	Arduino->WriteData((char*)mensaje_enviar, strlen(mensaje_enviar));
+	sprintf(mensaje_enviar, "%d\n", aforo);
+	Arduino->WriteData((char*)mensaje_enviar, strlen(mensaje_enviar));
+	
 	leer_fichero_usuarios_v1(clientes, &n, longitud);
 
 	setlocale(LC_ALL, "es-ES");
