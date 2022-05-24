@@ -83,7 +83,7 @@ int main(void)
 		Arduino->WriteData((char*)mensaje_enviar, strlen(mensaje_enviar));
 	}
 	else
-		printf("Atención: No se ha podido conectar con Arduino\n");
+		printf("AtenciÃ³n: No se ha podido conectar con Arduino\n");
 
 	sprintf_s(mensaje_enviar, "SET_AFORO\n");
 	Arduino->WriteData((char*)mensaje_enviar, strlen(mensaje_enviar));
@@ -125,7 +125,7 @@ int main(void)
 		case 7:
 			break;
 		default:
-			printf("Opción incorrecta\n");
+			printf("OpciÃ³n incorrecta\n");
 		}
 		if (total_clientes == 0)
 			escribir_fichero_usuarios_v1(clientes, n);
@@ -141,7 +141,7 @@ int menu(void)
 	printf("Introduzca la opcion deseada:\n 1. Registrarse\n 2. Solicitar Cita\n 3. Entrar Gimnasio\n ");
 	printf("4. Salir Gimnasio\n 5. Datos clientes\n 6. Listado de clientes\n 7.Fin programa\n");
 	scanf_s("%d", &opcion);
-	scanf_s("%c", &intro); // Para que el intro tras la opción no se quede en el buffer.
+	scanf_s("%c", &intro); // Para que el intro tras la opciÃ³n no se quede en el buffer.
 	return opcion;
 }
 
@@ -328,7 +328,7 @@ void mostrar_datos_clientes(datos clientes)
 {
 	printf("Nombre y apellido=%s\t%s\t", clientes.nombre, clientes.apellido);
 	printf("Fecha nacimiento=%d\t%d\t%d\t", clientes.fnacimiento.dia, clientes.fnacimiento.mes, clientes.fnacimiento.anyo);
-	printf("Teléfono=%d\n", clientes.telefono);
+	printf("TelÃ©fono=%d\n", clientes.telefono);
 	printf("Penalizaciones=%d\n", clientes.penalizaciones);
 }
 
@@ -347,20 +347,20 @@ void listado_clientes(datos clientes[], int n)
 void leer_fichero_usuarios_v1(datos p[], int* pnumero, int longitud)
 {
 	FILE* fichero; // Puntero para manipular el fichero
-	int num = 0; // Variable auxiliar para numero de usuarios leídos
+	int num = 0; // Variable auxiliar para numero de usuarios leÃ­dos
 	int i, pos; // Variable bucle y posicion final cadena
 	errno_t cod_error; // Codigo de error tras el proceso de apertura.
 	char intro[2];
 
 	cod_error = fopen_s(&fichero, "Usuario.txt", "rt"); // Se intenta abrir el fichero de texto
 	if (cod_error != 0)  // Si el fichero no se ha podido abrir
-		*pnumero = 0; // La lista estará vacía
+		*pnumero = 0; // La lista estarÃ¡ vacÃ­a
 	else  // Si el fichero ha podido abrirse 
 	{
 		fscanf_s(fichero, "%d", &num); // Se lee la cantidad de registros
 		if (num == 0) // Si esa cantidad es cero
-			*pnumero = 0; // La lista estará vacía
-		else  // Si hay registros para leer (según el entero leído)
+			*pnumero = 0; // La lista estarÃ¡ vacÃ­a
+		else  // Si hay registros para leer (segÃºn el entero leÃ­do)
 		{
 			if (num > longitud) // Si no hay memoria suficiente
 			{
@@ -369,7 +369,7 @@ void leer_fichero_usuarios_v1(datos p[], int* pnumero, int longitud)
 			}
 			else // Si hay memoria suficiente
 			{
-				fgets(intro, 2, fichero); // Saltamos el intro que hay tras el número 
+				fgets(intro, 2, fichero); // Saltamos el intro que hay tras el nÃºmero 
 				for (i = 0; i < num; i++)  // Se leen los registros uno por uno
 				{
 					fgets((p + i)->nombre, TAM, fichero);
@@ -381,7 +381,7 @@ void leer_fichero_usuarios_v1(datos p[], int* pnumero, int longitud)
 					fscanf_s(fichero, "%d", &(p + i)->penalizaciones);
 					// fgets(intro, 2, fichero); ??
 					fscanf_s(fichero, "%d", &(p + i)->telefono);
-					fgets(intro, 2, fichero); // Saltamos el intro que hay tras el número
+					fgets(intro, 2, fichero); // Saltamos el intro que hay tras el nÃºmero
 				}
 				*pnumero = num;
 			}
@@ -399,7 +399,7 @@ int escribir_fichero_usuarios_v1(datos* lista, int numero)
 	err = fopen_s(&fichero, "Usuarios.txt", "w");
 	if (err == 0) // Si el fichero se ha podido crear
 	{
-		fprintf(fichero, "%d\n", numero); // Se graba en el fichero el número de usuarios
+		fprintf(fichero, "%d\n", numero); // Se graba en el fichero el nÃºmero de usuarios
 		for (i = 0; i < numero; i++)
 		{
 
