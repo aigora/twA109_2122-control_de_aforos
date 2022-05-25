@@ -62,8 +62,7 @@ int main(void)
 {
 	Serial* Arduino = NULL;
 	char puerto[] = "COM3";
-	int aforo = 0;
-
+	
 	int opcion_menu;
 	int i = 0, exito = 0, n = 0;
 	int longitud = TAM;
@@ -79,7 +78,7 @@ int main(void)
 	{
 		sprintf_s(mensaje_enviar, "SET_AFORO\n");
 		Arduino->WriteData((char*)mensaje_enviar, strlen(mensaje_enviar));
-		sprintf_s(mensaje_enviar, "%d\n", aforo);
+		sprintf_s(mensaje_enviar, "%d\n", contador);
 		Arduino->WriteData((char*)mensaje_enviar, strlen(mensaje_enviar));
 	}
 	else
@@ -87,7 +86,7 @@ int main(void)
 
 	sprintf_s(mensaje_enviar, "SET_AFORO\n");
 	Arduino->WriteData((char*)mensaje_enviar, strlen(mensaje_enviar));
-	sprintf_s(mensaje_enviar, "%d\n", aforo);
+	sprintf_s(mensaje_enviar, "%d\n", contador);
 	Arduino->WriteData((char*)mensaje_enviar, strlen(mensaje_enviar));
 
 	leer_fichero_usuarios_v1(clientes, &n, longitud);
